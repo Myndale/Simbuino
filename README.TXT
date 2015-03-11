@@ -5,7 +5,7 @@ Application Overview
 Simbuino is an open-source Windows-based emulator for the Gamebuino hand-held console (see http://gamebuino.com). The latest version of the code and binaries are
 available from the following GitHub repository:
 
-http://www.github.org/Myndale/Simbuino
+https://github.com/Myndale/Simbuino
 
 All questions/bug reports etc should be directed to the official forum thread at http://gamebuino.com/forum/viewtopic.php?f=12&t=1028. Alternatively you can
 email me directly at simbuino@ppl-pilot.com.
