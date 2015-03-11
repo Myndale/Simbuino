@@ -1,0 +1,303 @@
+﻿<UserControl x:Class="Simbuino.UI.Avalon.AvalonDockHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock" 
+			 xmlns:converters="clr-namespace:Simbuino.UI.Converters"
+			 xmlns:disassembly="clr-namespace:Simbuino.UI.Disassembly"
+			 xmlns:lcd="clr-namespace:Simbuino.UI.Lcd"
+			 xmlns:main="clr-namespace:Simbuino.UI.Main"
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+			 xmlns:cmd ="http://www.galasoft.ch/mvvmlight"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600" >
+	
+	<UserControl.Resources>
+		
+		<converters:LcdImageConverter x:Key="LcdConverter" />
+		<converters:MemoryWordConverter x:Key="MemoryWordConverter" />
+		<converters:BitStringConverter x:Key="BitStringConverter" />
+		<converters:ASCIIConverter x:Key="ASCIIConverter" />
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+		<DataTemplate DataType="{x:Type main:DisplayRegister}">
+			<TextBlock Text="{Binding Value, StringFormat='{}{0:x2} '}" FontFamily="Courier New" />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type main:DisplayIORegister}">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding DisplayString, StringFormat='{}{0} -'}" Padding="5,0,5,0" FontFamily="Courier New" FontWeight="Bold" />
+				<TextBlock Text="{Binding Value, Converter={StaticResource BitStringConverter}}" Padding="5,0,0,0" FontFamily="Courier New" />
+				<TextBlock Text="{Binding Value, StringFormat='(0x{0:x2})'}" Padding="10,0,0,0" FontFamily="Courier New" />
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type main:DisplayRegisterLine}">
+			<!--<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding Address, StringFormat='0x{0:x4}: '}" Padding="5,0,5,0" FontFamily="Courier New" FontWeight="Bold" />
+				
+				<ItemsControl ItemsSource="{Binding Registers}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+
+				<ItemsControl ItemsSource="{Binding Registers}">
+					<ItemsControl.Resources>
+						<DataTemplate DataType="{x:Type main:DisplayRegister}">
+							<TextBlock Text="{Binding Value, Converter={StaticResource ASCIIConverter}}" FontFamily="Courier New" />
+						</DataTemplate>
+					</ItemsControl.Resources>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+				
+			</StackPanel>-->
+			<TextBlock Text="{Binding DisplayString}" Padding="5,0,5,0" FontFamily="Courier New" FontWeight="Bold" />
+		</DataTemplate>
+		
+	</UserControl.Resources>
+
+	<ad:DockingManager x:Name="dockingManager">
+		<ad:LayoutRoot>
+			
+			<ad:LayoutPanel Orientation="Vertical">
+				
+				<ad:LayoutPanel Orientation="Horizontal">
+
+					<ad:LayoutDocumentPane x:Name="DocumentsPane"  >
+						<ad:LayoutDocument Title="Disassembly">
+							<disassembly:DisassemblyControl DataContext="{Binding Simulation}" />
+						</ad:LayoutDocument>
+					</ad:LayoutDocumentPane>
+				
+					<ad:LayoutAnchorablePaneGroup DockWidth="600" Orientation="Vertical">
+						<ad:LayoutAnchorablePane>
+							<ad:LayoutAnchorable Title="Registers">																
+								<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="White">
+									<Grid>
+										<Grid.Resources>
+											<Style TargetType="{x:Type TextBlock}">
+												<Setter Property="Foreground" Value="Blue" />
+												<Setter Property="FontFamily" Value="Courier New" />
+												<Setter Property="HorizontalAlignment" Value="Left" />
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding Changed}" Value="True">
+														<Setter Property="Foreground" Value="Red" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</Grid.Resources>
+											
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="20"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+
+										<StackPanel Grid.Column="0" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayPC}"		Text="{Binding Value, StringFormat='    PC: 0x{0:x4}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplaySP}"		Text="{Binding Value, StringFormat='    SP: 0x{0:x4}'}" />											
+											<TextBlock DataContext="{Binding Simulation.DisplaySREG}"	Text="{Binding Value, StringFormat='  SREG: 0x{0:x2}'}" />
+										</StackPanel>
+										<StackPanel Grid.Column="1" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayB}"		Text="{Binding Value, StringFormat='Port B: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayC}"		Text="{Binding Value, StringFormat='Port C: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayD}"		Text="{Binding Value, StringFormat='Port D: 0x{0:x2}'}" />
+										</StackPanel>
+										<StackPanel Grid.Column="2" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayX}"		Text="{Binding Value, StringFormat='X (r27:r26): 0x{0:x4}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayY}"		Text="{Binding Value, StringFormat='Y (r29:r28): 0x{0:x4}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayZ}"		Text="{Binding Value, StringFormat='Z (r31:r30): 0x{0:x4}'}" />
+										</StackPanel>
+
+										<StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayR[0]}"	Text="{Binding Value, StringFormat='r0:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[1]}"	Text="{Binding Value, StringFormat='r1:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[2]}"	Text="{Binding Value, StringFormat='r2:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[3]}"	Text="{Binding Value, StringFormat='r3:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[4]}"	Text="{Binding Value, StringFormat='r4:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[5]}"	Text="{Binding Value, StringFormat='r5:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[6]}"	Text="{Binding Value, StringFormat='r6:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[7]}"	Text="{Binding Value, StringFormat='r7:  0x{0:x2}'}" />
+										</StackPanel>
+										<StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayR[8]}"	Text="{Binding Value, StringFormat='r8:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[9]}"	Text="{Binding Value, StringFormat='r9:  0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[10]}"	Text="{Binding Value, StringFormat='r10: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[11]}"	Text="{Binding Value, StringFormat='r11: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[12]}"	Text="{Binding Value, StringFormat='r12: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[13]}"	Text="{Binding Value, StringFormat='r13: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[14]}"	Text="{Binding Value, StringFormat='r14: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[15]}"	Text="{Binding Value, StringFormat='r15: 0x{0:x2}'}" />
+										</StackPanel>
+										<StackPanel Grid.Column="2" Grid.Row="2" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayR[16]}"	Text="{Binding Value, StringFormat='r16: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[17]}"	Text="{Binding Value, StringFormat='r17: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[18]}"	Text="{Binding Value, StringFormat='r18: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[19]}"	Text="{Binding Value, StringFormat='r19: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[20]}"	Text="{Binding Value, StringFormat='r20: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[21]}"	Text="{Binding Value, StringFormat='r21: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[22]}"	Text="{Binding Value, StringFormat='r22: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[23]}"	Text="{Binding Value, StringFormat='r23: 0x{0:x2}'}" />
+										</StackPanel>
+										<StackPanel Grid.Column="3" Grid.Row="2" Orientation="Vertical">
+											<TextBlock DataContext="{Binding Simulation.DisplayR[24]}"	Text="{Binding Value, StringFormat='r24: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[25]}"	Text="{Binding Value, StringFormat='r25: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[26]}"	Text="{Binding Value, StringFormat='r26: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[27]}"	Text="{Binding Value, StringFormat='r27: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[28]}"	Text="{Binding Value, StringFormat='r28: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[29]}"	Text="{Binding Value, StringFormat='r29: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[30]}"	Text="{Binding Value, StringFormat='r30: 0x{0:x2}'}" />
+											<TextBlock DataContext="{Binding Simulation.DisplayR[31]}"	Text="{Binding Value, StringFormat='r31: 0x{0:x2}'}" />
+										</StackPanel>
+									</Grid>
+								</ScrollViewer>
+							</ad:LayoutAnchorable>
+							<ad:LayoutAnchorable Title="IO">
+								<ItemsControl VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+											  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Simulation.ReversedDisplayIO}" >
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<VirtualizingStackPanel />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.Template>
+										<ControlTemplate>
+											<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												Padding="{TemplateBinding Control.Padding}"
+												BorderBrush="{TemplateBinding Border.BorderBrush}"
+												Background="{TemplateBinding Panel.Background}"
+												SnapsToDevicePixels="True">
+												<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+													<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+												</ScrollViewer>
+											</Border>
+										</ControlTemplate>
+									</ItemsControl.Template>
+								</ItemsControl>
+							</ad:LayoutAnchorable>
+							<ad:LayoutAnchorable Title="Flash">
+								<ItemsControl VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+											  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Simulation.DisplayFlash}" >
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<VirtualizingStackPanel />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.Template>
+										<ControlTemplate>
+											<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												Padding="{TemplateBinding Control.Padding}"
+												BorderBrush="{TemplateBinding Border.BorderBrush}"
+												Background="{TemplateBinding Panel.Background}"
+												SnapsToDevicePixels="True">
+												<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+													<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+												</ScrollViewer>
+											</Border>
+										</ControlTemplate>
+									</ItemsControl.Template>
+								</ItemsControl>
+							</ad:LayoutAnchorable>
+							
+							<ad:LayoutAnchorable Title="EEPROM">
+								<ItemsControl VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+											  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Simulation.DisplayEEPROM}" >
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<VirtualizingStackPanel />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.Template>
+										<ControlTemplate>
+											<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												Padding="{TemplateBinding Control.Padding}"
+												BorderBrush="{TemplateBinding Border.BorderBrush}"
+												Background="{TemplateBinding Panel.Background}"
+												SnapsToDevicePixels="True">
+												<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+													<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+												</ScrollViewer>
+											</Border>
+										</ControlTemplate>
+									</ItemsControl.Template>
+								</ItemsControl>
+							</ad:LayoutAnchorable>
+							
+							<ad:LayoutAnchorable Title="SRAM">
+								<i:Interaction.Triggers>
+									<i:EventTrigger EventName="IsSelectedChanged">
+										<cmd:EventToCommand Command="{Binding Simulation.SRAMPanelSelectedCommand}" />
+									</i:EventTrigger>
+								</i:Interaction.Triggers>
+								<ItemsControl VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+											  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Simulation.DisplayRAM}" >
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<VirtualizingStackPanel />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.Template>
+										<ControlTemplate>
+											<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												Padding="{TemplateBinding Control.Padding}"
+												BorderBrush="{TemplateBinding Border.BorderBrush}"
+												Background="{TemplateBinding Panel.Background}"
+												SnapsToDevicePixels="True">
+												<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+													<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+												</ScrollViewer>
+											</Border>
+										</ControlTemplate>
+									</ItemsControl.Template>
+								</ItemsControl>
+							</ad:LayoutAnchorable>
+						</ad:LayoutAnchorablePane>
+						
+						<ad:LayoutAnchorablePane>
+							<ad:LayoutAnchorable Title="LCD">
+								<Border Background="{Binding ElementName=lcd, Path=Background}">
+									<Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+										<Grid>
+											<lcd:LcdControl x:Name="lcd" DataContext="{Binding Simulation.Lcd}" Device="{Binding}" LcdForeground="{Binding LcdForeground}" LcdAngle="{Binding LcdAngle}" Margin="10" />
+											<TextBlock Text="REC" Foreground="Red" TextOptions.TextFormattingMode="Ideal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" Visibility="{Binding RecordingBlink, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+										</Grid>
+									</Viewbox>
+								</Border>
+							</ad:LayoutAnchorable>
+						</ad:LayoutAnchorablePane>
+					</ad:LayoutAnchorablePaneGroup>
+				</ad:LayoutPanel>
+
+				<!--Bottom pane-->
+				<ad:LayoutAnchorablePane DockHeight="150" >
+					<ad:LayoutAnchorable Title="UART">
+						<ScrollViewer VerticalScrollBarVisibility="Visible">
+							<TextBox Text="{Binding Simulation.USART.TransmitLog}" TextWrapping="Wrap" IsReadOnly="True"/>
+						</ScrollViewer>
+					</ad:LayoutAnchorable>
+					<ad:LayoutAnchorable Title="Breakpoints">
+						<TextBox/>
+					</ad:LayoutAnchorable>
+				</ad:LayoutAnchorablePane>
+
+			</ad:LayoutPanel>
+			
+		</ad:LayoutRoot>
+	</ad:DockingManager>
+
+</UserControl>

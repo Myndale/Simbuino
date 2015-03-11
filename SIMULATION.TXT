@@ -1,0 +1,32 @@
+Gamebuino Simulation Code Overview
+==================================
+
+The "Simulation" class contains the current state of the simulation including the various peripheral helper classes (LcdDevice, SdDevice etc). The
+AtmelContext class contains the state of the AVR microprocessor itself, most of which consists of static variables in order to maximize performance.
+
+The AtmelProcessor.Step() function is executed once per instruction and performs the following tasks:
+	- Checks to see if any of the AVR timers have triggered.
+	- Checks to see if any interrupts are pending, and invokes the relevant interrupt handlers as required.
+	- Retrieves the op-code pointed to by the PC from the AtmelContext.Flash array.
+	- Looks up the handler for this op-code in the OpCodeMap array, calls it and updates the current clock cycle counter.
+	- Adjusts the current PC based on the size of the op-code (skipped if the op-code is flagged as modifying PC itself).
+
+Timers: the AtmelProcessor.UpdateTimers() function is called whenever anything related to the timers has changed (e.g. one of the relevant registers).
+It cycles through all timer events and calculates the clock cycle on which the next important "event" will occur (e.g. a timer overflowing) which is then
+stored in AtmelContext.NextTimerEvent. The current cycle number (AtmelContext.Clock) is checked against this value once per instruction and 
+calls UpdateTimers() when it matches. UpdateTimers() is also responsible for detecting the events themselves and taking appropriate action
+like triggers, timer interrupts etc. In this way all timers are accurate down to the individual clock cycle but overall require only one quick integer
+comparison per-instruction to determine whether or not it's time to process them.
+
+Interrupts: Interrupts are handled in a manner similar to timers in that there are multiple interrupts that can occur but only a single variable
+(InterruptPending) that is checked each instruction. When the code determines that an interrupt requires triggering it sets this variable to true;
+the CheckInterrupts() function is then responsible for determining what has happened and triggering the appropriate interrupt handler accordingly.
+
+Flash memory, EEPROM and RAM are represented internally by arrays in the AtmelContext class (i.e. "Flash" and "EEPROM"). The "R" member is a raw
+array of bytes representing the entire accessible address space i.e. the register file, IO registers and SRAM. However, access to this array
+by the op-code handlers is done via the "RAM" array instead. This array contains pointers to classes derived from base class Register. The instances
+of these classes at the memory locations for the registers and regular SRAM are of type MemoryMappedRegister and simply provide read/write access to
+the values in the R array. The remaining instances (i.e. the IO registers) are mostly of type ObservableRegister which provides change notification
+when they are written to. In this way access to the registers and SRAM is relatively fast, while access to the IO registers (both reading and
+writing) can be subscribed to and/or overridden by various parts of the simulation code to provide hardware-specific functionality. Note that while
+the "R" array is intended to represent an array of bytes it is in practice implemented as an array of ints to improve performance.

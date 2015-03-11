@@ -1,0 +1,26 @@
+High priority:	
+	Open recent file list
+	Better timer support (PWM modes)
+	Fix Windowing system (support closing/re-opening etc)
+	Bootloader support (for writing to flash and launching other titles)
+	Better UART support (clear, auto-scrolling and user input etc)
+
+Medium priority:			
+	Ability to launch directly from the IDE via virtual serial port utilities
+	Better IO panel support (display individual fields etc)
+	Hotkey save/restore entire VM state
+	Better SD card emulation (e.g. writes)		
+	Breakpoints screen
+	Help page, documentation.
+
+Lower priority:
+	Ambient light sensor - user adjustable
+	Battery monitor - user adjustable
+	i2C
+	Plugin system for 3rd-party peripherals
+	External interrupts
+
+No immediate plan to support:
+	2-wire serial interface		
+	R/C oscillator
+	Power management (sleep, watchdog etc)

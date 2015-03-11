@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Simbuino.UI.ViewModel"
+                    xmlns:pre="clr-namespace:Simbuino.UI.Presenters"
+                    xmlns:capture="clr-namespace:Simbuino.UI.Capture"
+					xmlns:options="clr-namespace:Simbuino.UI.Options"
+                    xmlns:uploading="clr-namespace:Simbuino.UI.Uploading">
+
+	<pre:MessageBoxPresenter x:Key="{x:Type vm:MessageBoxViewModel}" />
+	<pre:OpenFileDialogPresenter x:Key="{x:Type vm:OpenFileDialogViewModel}" />
+	<pre:SaveFileDialogPresenter x:Key="{x:Type vm:SaveFileDialogViewModel}" />
+
+	<capture:CaptureExportView x:Key="{x:Type capture:CaptureExportViewModel}" x:Shared="False"/>
+	<options:OptionsDialogView x:Key="{x:Type options:OptionsDialogViewModel}" x:Shared="False"/>
+    <uploading:UploadingDialogView x:Key="{x:Type uploading:UploadingDialogViewModel}" x:Shared="False"/>
+
+</ResourceDictionary>
+	

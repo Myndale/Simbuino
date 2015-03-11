@@ -1,0 +1,156 @@
+﻿<Window x:Class="Simbuino.UI.Options.OptionsDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
+		xmlns:input="clr-namespace:System.Windows.Input;assembly=WindowsBase"
+		xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Options" Height="400" Width="320" FontSize="12">
+	
+	<Window.Resources>
+
+		<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="KeyValues">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="input:Key" />
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
+
+	</Window.Resources>
+	
+	<Grid>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<TabControl Grid.ColumnSpan="3">
+			<TabItem Header="Graphics">
+				<StackPanel>
+					<GroupBox Header="Display Persistence" Margin="10,10,10,0" VerticalAlignment="Top">
+						<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+							<TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10" TextWrapping="Wrap">
+								Persistence simulates LCD response time and is more suitable for games that employ double-buffered grayscale.
+							</TextBlock>
+							<CheckBox Content="Enabled" IsChecked="{Binding Path=Persistence}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" />
+						</StackPanel>
+					</GroupBox>
+
+					<GroupBox Header="Colors" Margin="10,10,10,0" VerticalAlignment="Top">
+						<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="100*"/>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="100*"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Label Content="Background:" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" Margin="5" />
+							<toolkit:ColorPicker Grid.Row="0" Grid.Column="1" SelectedColor="{Binding LcdBackground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+								ColorMode="ColorCanvas" ShowAdvancedButton="False" ShowStandardColors="False" ShowAvailableColors="False" />
+							<Label Content="Foreground:" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" Margin="5" />
+							<toolkit:ColorPicker Grid.Row="1" Grid.Column="1" SelectedColor="{Binding LcdForeground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+								ColorMode="ColorCanvas" ShowAdvancedButton="False" ShowStandardColors="False" ShowAvailableColors="False" />
+							<Label Content="Backlight:" Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Right" VerticalAlignment="Center" Margin="5" />
+							<toolkit:ColorPicker Grid.Row="0" Grid.Column="3" SelectedColor="{Binding LcdBacklight}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+								ColorMode="ColorCanvas" ShowAdvancedButton="False" ShowStandardColors="False" ShowAvailableColors="False" />
+							<Button Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Width="50" Margin="5" Content="Defaults" Command="{Binding DefaultColorsCommand}" />
+						</Grid>
+					</GroupBox>
+
+					<Grid HorizontalAlignment="Center" Margin="10,10,10,10">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<TextBlock Text="Orientation:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+						<ComboBox Grid.Column="1"
+								  ItemsSource="{Binding Orientations}"
+								  SelectedValue="{Binding LcdAngle}"
+								  DisplayMemberPath="Description"
+								  SelectedValuePath="Angle"
+								  HorizontalAlignment="Left" MinWidth="100" />
+					</Grid>
+
+				</StackPanel>
+			</TabItem>
+			<TabItem Header="Audio">
+				<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+					<CheckBox Content="Audio Enabled" IsChecked="{Binding Path=AudioEnabled}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+					<CheckBox Content="Filtered (simulates Gamebuino speaker)" IsChecked="{Binding Path=AudioFiltered}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+				</StackPanel>
+			</TabItem>
+			
+			<TabItem Header="Input">
+				<GroupBox Header="Key Mappings" Margin="10" VerticalAlignment="Top">
+					<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="100*"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="100*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Label Content="Up:" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="0" Grid.Column="1" Margin="10" SelectedItem="{Binding UpKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="Down:" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="1" Grid.Column="1" Margin="10" SelectedItem="{Binding DownKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="Left:" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="2" Grid.Column="1" Margin="10" SelectedItem="{Binding LeftKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="Right:" Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="3" Grid.Column="1" Margin="10" SelectedItem="{Binding RightKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="A:" Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="0" Grid.Column="3" Margin="10" SelectedItem="{Binding AKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="B:" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="1" Grid.Column="3" Margin="10" SelectedItem="{Binding BKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						<Label Content="C:" Grid.Row="2" Grid.Column="2" HorizontalContentAlignment="Right" VerticalAlignment="Center" />
+						<ComboBox Grid.Row="2" Grid.Column="3" Margin="10" SelectedItem="{Binding CKey}" ItemsSource="{Binding Source={StaticResource KeyValues}}" />
+						
+						<Button Grid.Row="3" Grid.Column="3" Margin="10" Content="Defaults" Command="{Binding DefaultKeysCommand}" />
+					</Grid>
+				</GroupBox>				
+				
+			</TabItem>
+
+			<TabItem Header="SD Card">
+				<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+					<TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10" TextWrapping="Wrap">
+						SD Card emulation is currently read-only and requires a raw IMG file of a FAT16 formatted SD card.
+						This emulator does not currently support the Gamebuino bootloader, so while apps like LOADER.HEX will
+						run and display files correctly they are not yet able to successfully flash them to memory.
+					</TextBlock>
+					<GroupBox Header="Local IMG Filename:">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<TextBox Grid.Column="0" Text="{Binding ImgFile}"  HorizontalAlignment="Stretch"/>
+							<Button Grid.Column="1" Content="..." HorizontalAlignment="Right" Padding="5,0,5,0" Margin="5,0,5,0" Command="{Binding SelectImgFileCommand}"/>
+						</Grid>
+					</GroupBox>
+				</StackPanel>
+			</TabItem>
+
+		</TabControl>
+
+		<Button Grid.Row="1" Grid.Column="1" Content="Cancel" Command="{Binding CancelCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="24" Margin="10"/>
+		<Button Grid.Row="1" Grid.Column="2" Content="Ok" Command="{Binding OkCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="24" Margin="10"/>
+
+	</Grid>
+</Window>
