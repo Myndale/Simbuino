@@ -22,7 +22,7 @@ architectural pattern, although there are currently some minor violations that r
 	- Simbuino.Hardware: Small project that handles communication with Gamebuino hardware (i.e. game uploads).
 	- MvvmDialogs: Generic library used to add dialog box functionality to MVVM applications.
 
-The SIMULATION.TXT fiel contains details as to how the simulation code works. In addition to the usual DEBUG and RELEASE project configurations there is one called
+The SIMULATION.TXT file contains details as to how the simulation code works. In addition to the usual DEBUG and RELEASE project configurations there is one called
 PROFILE which currently runs very slow but can be used to measure the execution time of the individual op-code handlers.
 
 3rd-Party Code
@@ -143,6 +143,7 @@ Changes:
 Version: 1.0.0.19 (First Open Source Release)
 Date: 12th Mar 2015
 Changes:
+	- Added version number to the About dialog.
 	- Fixed a bug with EEPROM not persisting correctly across application launches.
 	- Added EEPROM save/load menu options
 	- Fixed bug involving output IO pins not being read back correctly
