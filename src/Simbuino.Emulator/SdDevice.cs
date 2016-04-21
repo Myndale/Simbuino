@@ -18,7 +18,7 @@ namespace Simbuino.Emulator
 		const int CS_BIT = 2;
 
 		private int Index = 0;
-		private int[] Received = new int[6];
+		private int[] Received = new int[10];
 		private SPI SPI;
 		private int Status = 0;
 		private byte[] Buffer = new byte[550];
@@ -172,7 +172,6 @@ namespace Simbuino.Emulator
 							this.SendIndex = 0;
 							this.BytesToSend = 0;
 							this.Buffer[this.BytesToSend++] = 0;
-							this.AppCommand = true;
 						}
 						break;
 
