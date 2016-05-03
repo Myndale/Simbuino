@@ -25,6 +25,12 @@ architectural pattern, although there are currently some minor violations that r
 The SIMULATION.TXT file contains details as to how the simulation code works. In addition to the usual DEBUG and RELEASE project configurations there is one called
 PROFILE which currently runs very slow but can be used to measure the execution time of the individual op-code handlers.
 
+Simbuino4Web
+==============
+The Simbuino\src\Simbuino4Web folder contains an experimental HTML5 port of the core Simbuino engine developed for Microsoft Visual Studio Express 2012 for Web. A
+runtime version of this project is currently hosted at http://simbuino4web.ppl-pilot.com. It is recommended that you run this version of Simbuino under Chome; it will
+work with Internet Explorer but runs very slowly and without sound.
+
 3rd-Party Code
 ==============
 Simbuino uses the following 3rd-party libraries and code:

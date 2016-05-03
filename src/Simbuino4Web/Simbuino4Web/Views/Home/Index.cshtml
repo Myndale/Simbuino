@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Simbuino4Web - Experimental HTML5 <a href="http://gamebuino.com/">Gamebuino</a> emulator.</h1>
+<div>Developed by Mark Feldman (aka <a href='http://gamebuino.com/forum/ucp.php?i=pm&mode=compose&u=117'>"Myndale" on the Gamebuino Forum</a>).</div>
+
+<canvas id="canvas" tabindex='1' width="84" height="48" style="width:630px;height:360px;image-rendering:pixelated"></canvas>
+
+<div class="outer">
+  <div class="inner" style="width:630px">
+	  <table>
+		  <tr>
+			  <td style="width:315px">
+				  <button id="reset">Reset</button>
+			  </td>
+			  <td style="width:315px">
+				  <div id="fps" align="right">0 fps</div>
+			  </td>
+		  </tr>
+	  </table>
+	  
+  </div>
+</div>
+
+<div class="outer">
+  <div class="inner">
+	  Select a .HEX file: 
+	  <input type="file" id="fileInput">
+	  <div>Remember to always click on the game panel after a load or reset to start playing.</div>
+	  <div>Key Mappings: WASD=arrows, K=A button, L=B button, R=C button</div>
+	  <div id="error"></div>
+  </div>
+</div>
+
+
+@section scripts {
+
+	<!-- Oh look, I've added my Arduino emulator code as-is, comments and all. Aren't you lucky? ;) -->
+	@Url.Script("/Scripts/Views/class.js")	
+	@Url.Script("/Scripts/Views/MemoryMappedRegister.js")
+	@Url.Script("/Scripts/Views/AtmelRegisters.js")
+	@Url.Script("/Scripts/Views/FlagsRegister.js")
+	@Url.Script("/Scripts/Views/PortRegister.js")
+	@Url.Script("/Scripts/Views/AtmelIO.js")
+	@Url.Script("/Scripts/Views/AtmelContext.js")
+	@Url.Script("/Scripts/Views/AtmelProcessor.js")
+	@Url.Script("/Scripts/Views/ADC.js")
+	@Url.Script("/Scripts/Views/Buttons.js")
+	@Url.Script("/Scripts/Views/SPI.js")
+	@Url.Script("/Scripts/Views/USART.js")
+	@Url.Script("/Scripts/Views/EEPROM.js")
+	@Url.Script("/Scripts/Views/Lcd.js")
+	@Url.Script("/Scripts/Views/AudioPlayer.js")
+	@Url.Script("/Scripts/Views/HexDecoder.js")
+	@Url.Script("/Scripts/Views/Simulation.js")
+}
