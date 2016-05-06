@@ -73,13 +73,13 @@ $(function () {
 
 		ProcessKey: function (keyCode, value)
 		{
-			if (keyCode == 87) // W
+			if (keyCode == 69) // E
 				Buttons.Up().set(value);
 			if (keyCode == 83) // S
-				Buttons.Down().set(value);
-			if (keyCode == 65) // A
-				Buttons.Left().set(value);
+				Buttons.Left().set(value);			
 			if (keyCode == 68) // D
+				Buttons.Down().set(value);
+			if (keyCode == 70) // F
 				Buttons.Right().set(value);
 			if (keyCode == 75) // K
 				Buttons.A().set(value);

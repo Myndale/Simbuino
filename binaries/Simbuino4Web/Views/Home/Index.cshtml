@@ -29,7 +29,7 @@
 	  Select a .HEX file: 
 	  <input type="file" id="fileInput">
 	  <div>Remember to always click on the game panel after a load or reset to start playing.</div>
-	  <div>Key Mappings: WASD=arrows, K=A button, L=B button, R=C button</div>
+	  <div>Key Mappings: ESDF=arrows, K=A button, L=B button, R=C button</div>
 	  <div id="error"></div>
   </div>
 </div>
@@ -37,8 +37,10 @@
 
 @section scripts {
 
-	<!-- Oh look, I've added my Arduino emulator code as-is, comments and all. Aren't you lucky? ;) -->
+	@Url.Script("/Scripts/knockout-2.2.0.js")
 	@Url.Script("/Scripts/Views/class.js")	
+
+	<!-- Oh look, I've added my Arduino emulator code as-is, comments and all. Aren't you lucky? ;) -->
 	@Url.Script("/Scripts/Views/MemoryMappedRegister.js")
 	@Url.Script("/Scripts/Views/AtmelRegisters.js")
 	@Url.Script("/Scripts/Views/FlagsRegister.js")

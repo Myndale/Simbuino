@@ -41,8 +41,9 @@ $(function () {
 			this.Canvas.addEventListener("keydown", function (e) { self.ProcessKey(e.keyCode, true) }, true);
 			this.Canvas.addEventListener("keyup", function (e) { self.ProcessKey(e.keyCode, false) }, true);
 
-			// handle file load button event
-			$("#fileInput").change(function (e) { self.OnLoad(e); });
+			// handle hex and img button events
+			$("#hexInput").change(function (e) { self.OnLoadHex(e); });
+			$("#imgInput").change(function (e) { self.OnLoadImg(e); });
 
 			// handle reset event
 			$("#reset").click(function (e) { self.OnReset(e); });
@@ -73,13 +74,13 @@ $(function () {
 
 		ProcessKey: function (keyCode, value)
 		{
-			if (keyCode == 87) // W
+			if (keyCode == 69) // E
 				Buttons.Up().set(value);
 			if (keyCode == 83) // S
-				Buttons.Down().set(value);
-			if (keyCode == 65) // A
-				Buttons.Left().set(value);
+				Buttons.Left().set(value);			
 			if (keyCode == 68) // D
+				Buttons.Down().set(value);
+			if (keyCode == 70) // F
 				Buttons.Right().set(value);
 			if (keyCode == 75) // K
 				Buttons.A().set(value);
@@ -89,9 +90,9 @@ $(function () {
 				Buttons.C().set(value);
 		},
 
-		OnLoad: function (e) {
+		OnLoadHex: function (e) {
 			var self = this;
-			var file = $("#fileInput")[0].files[0];
+			var file = $("#hexInput")[0].files[0];
 			{
 				var reader = new FileReader();
 				reader.onload = function (e) {
@@ -105,6 +106,8 @@ $(function () {
 						AtmelProcessor.InitInstrTable();
 						Lcd.Reset();
 						Buttons.Reset();
+
+						$("#canvas").focus();
 					}
 					catch (e)
 					{
@@ -112,6 +115,18 @@ $(function () {
 					}
 				}
 				reader.readAsText(file);
+			}
+		},
+
+		OnLoadImg: function (e) {
+			var self = this;
+			var file = $("#imgInput")[0].files[0];
+			{
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					alert("Done!");
+				}
+				reader.readAsArrayBuffer(file);
 			}
 		},
 
@@ -126,6 +141,8 @@ $(function () {
 				AtmelProcessor.InitInstrTable();
 				Lcd.Reset();
 				Buttons.Reset();
+
+				$("#canvas").focus();
 			}
 			catch (e) {
 			}

@@ -69,6 +69,11 @@ canvas {
 	display: block;
 	width: 630px;
 	border: 1px solid black;
+    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
 }
 
 .outer {
