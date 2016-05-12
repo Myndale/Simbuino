@@ -10,6 +10,11 @@
 		PCModifyMap: [],
 		OpCodeSizes: [],
 
+		FlashSize: 32 * 1024 / 2,
+		EEPROMSize: 1024,
+		BootloaderSize: 2 * 1024 / 2,
+		BootloaderAddr: this.FlashSize - this.BootloaderSize,
+
 		// todo: declare the interrupt table somwhere		
 		ClockTable: [1, 2, 4, 8, 16, 32, 64, 128, 256, 1, 1, 1, 1, 1, 1, 1],
 		ClockSelectTable: [0, 1, 8, 64, 256, 1024, 1, 1],
@@ -78,7 +83,7 @@
 		},
 
 		InitInstrTable: function() {
-			var len = AtmelContext.FlashSize;
+			var len = AtmelProcessor.FlashSize;
 			this.InstrTable = [];
 			for (var pc = 0; pc < len; pc++) {
 				var opcode = AtmelContext.Flash[pc];
@@ -475,11 +480,11 @@
 						var d = (opcode >> 4) & 0x1f;
 						var r = (opcode & 0x0f) + ((opcode >> 5) & 0x10);
 						var R = AtmelContext.R[d] & AtmelContext.R[r];
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.V.set(0);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -495,11 +500,11 @@
 						var d = 16 + ((opcode >> 4) & 0x0f);
 						var K = (opcode & 0x0f) + ((opcode >> 4) & 0xf0);
 						var R = AtmelContext.R[d] & K;
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.V.set(0);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -516,12 +521,12 @@
 						var Rd = AtmelContext.R[d];
 						var R = (Rd < 128) ? Rd : -(0x100 - Rd);
 						R >>= 1;
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.C.set(Rd & 1);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
 						AtmelContext.SREG.V.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.C.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -535,7 +540,7 @@
 					Handler: function() {
 						var opcode = AtmelContext.Flash[AtmelContext.PC];
 						var s = (opcode >> 4) & 0x07;
-						AtmelContext.Flags = (AtmelContext.Flags & ~(1 << s)) & 0xff;
+						AtmelContext.Flags = AtmelContext.Flags & ~(1 << s);
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -622,7 +627,7 @@
 					Handler: function() {
 						var opcode = AtmelContext.Flash[AtmelContext.PC];
 						var s = (opcode >> 4) & 0x07;
-						AtmelContext.Flags = (AtmelContext.Flags | (1 << s)) & 0xff;
+						AtmelContext.Flags = AtmelContext.Flags | (1 << s);
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -882,11 +887,11 @@
 						var d = (opcode >> 4) & 0x1f;
 						var r = (opcode & 0x0f) + ((opcode >> 5) & 0x10);
 						var R = AtmelContext.R[d] ^ AtmelContext.R[r];
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.V.set(0);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1140,7 +1145,7 @@
 						var opcode = AtmelContext.Flash[AtmelContext.PC];
 						var d = 16 + ((opcode >> 4) & 0x0f);
 						var K = (opcode & 0x0f) + ((opcode >> 4) & 0xf0);
-						AtmelContext.R[d] = K & 0xff;
+						AtmelContext.R[d] = K;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1206,13 +1211,13 @@
 						var d = ((opcode >> 4) & 0x1f);
 						var Rd = AtmelContext.R[d];
 						var R = Rd >> 1;
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set(0);
 						var C = Rd & 1;
 						AtmelContext.SREG.C.set(C); // todo: double-check that these are all correct
 						AtmelContext.SREG.V.set(C);
 						AtmelContext.SREG.S.set(C);
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1260,8 +1265,8 @@
 						var opcode = AtmelContext.Flash[AtmelContext.PC];
 						var d = (opcode >> 4) & 0x1f;
 						var r = (opcode & 0x0f) + ((opcode >> 5) & 0x10);
-						var Rd = AtmelContext.R[d] & 0xff;
-						var Rr = AtmelContext.R[r] & 0xff;
+						var Rd = AtmelContext.R[d];
+						var Rr = AtmelContext.R[r];
 						var R = Rd * Rr;
 						AtmelContext.R[0] = R & 0xff;
 						AtmelContext.R[1] = (R >> 8) & 0xff;
@@ -1362,11 +1367,11 @@
 						var d = (opcode >> 4) & 0x1f;
 						var r = (opcode & 0x0f) + ((opcode >> 5) & 0x10);
 						var R = AtmelContext.R[d] | AtmelContext.R[r];
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.V.set(0);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1381,12 +1386,12 @@
 						var opcode = AtmelContext.Flash[AtmelContext.PC];
 						var d = 16 + ((opcode >> 4) & 0x0f);
 						var K = (opcode & 0x0f) + ((opcode >> 4) & 0xf0);
-						var R = AtmelContext.R[d] | (K & 0xff);
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						var R = AtmelContext.R[d] | K;
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.V.set(0);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1517,12 +1522,12 @@
 						var d = ((opcode >> 4) & 0x1f);
 						var Rd = AtmelContext.R[d];
 						var R = (AtmelContext.SREG.C.get() << 7) | (Rd >> 1);
-						AtmelContext.SREG.Z.set(((R & 0xff) == 0) ? 1 : 0);
+						AtmelContext.SREG.Z.set((R == 0) ? 1 : 0);
 						AtmelContext.SREG.N.set((R >> 7) & 1);
 						AtmelContext.SREG.C.set(Rd & 1);
 						AtmelContext.SREG.S.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.V.get());
 						AtmelContext.SREG.V.set(AtmelContext.SREG.N.get() ^ AtmelContext.SREG.C.get());
-						AtmelContext.R[d] = R & 0xff;
+						AtmelContext.R[d] = R;
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
@@ -1912,8 +1917,8 @@
 						var r = (opcode >> 4) & 0x1f;
 						var addr = AtmelContext.Z.get();
 						var R = AtmelContext.R[r];
-						AtmelContext.R[r] = AtmelContext.RAM[addr].get() & 0xff;
-						AtmelContext.RAM[addr].set(R & 0xff);
+						AtmelContext.R[r] = AtmelContext.RAM[addr].get();
+						AtmelContext.RAM[addr].set(R);
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}

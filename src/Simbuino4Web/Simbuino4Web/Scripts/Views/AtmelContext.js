@@ -32,9 +32,7 @@
 		NextTimerEvent: 0,
 		UDRE_InterruptPending: false,
 		SPI_InterruptPending: false,
-		
-		FlashSize: 32 * 1024 / 2,
-		EEPROMSize: 1024,		
+			
 
 		// general register file mapped from 0x00 to 0x1f
 		FirstReg: 0x00,
@@ -109,8 +107,8 @@
 		Init: function()
 		{
 			var self = this;
-			this.Flash = range(0, this.FlashSize);
-			this.EEPROM = range(0, this.EEPROMSize);
+			this.Flash = range(0, AtmelProcessor.FlashSize);
+			this.EEPROM = range(0, AtmelProcessor.EEPROMSize);
 			this.R = range(0, this.NumRegs + this.NumIO + this.RAMSize);
 			var mappedR = [];
 			for (var addr = 0; addr < this.NumRegs; addr++)

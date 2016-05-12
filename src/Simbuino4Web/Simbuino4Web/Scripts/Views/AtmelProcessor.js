@@ -10,6 +10,11 @@
 		PCModifyMap: [],
 		OpCodeSizes: [],
 
+		FlashSize: 32 * 1024 / 2,
+		EEPROMSize: 1024,
+		BootloaderSize: 2 * 1024 / 2,
+		BootloaderAddr: this.FlashSize - this.BootloaderSize,
+
 		// todo: declare the interrupt table somwhere		
 		ClockTable: [1, 2, 4, 8, 16, 32, 64, 128, 256, 1, 1, 1, 1, 1, 1, 1],
 		ClockSelectTable: [0, 1, 8, 64, 256, 1024, 1, 1],
@@ -78,7 +83,7 @@
 		},
 
 		InitInstrTable: function() {
-			var len = AtmelContext.FlashSize;
+			var len = AtmelProcessor.FlashSize;
 			this.InstrTable = [];
 			for (var pc = 0; pc < len; pc++) {
 				var opcode = AtmelContext.Flash[pc];

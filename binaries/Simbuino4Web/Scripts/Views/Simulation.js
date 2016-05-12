@@ -27,6 +27,8 @@ $(function () {
 			USART.Init();
 			EEPROM.Init();
 			Lcd.Init(this.Context);
+			SdDevice.Init();
+			HexDecoder.Decode(Bootloader);
 
 			this.FrameRate = 60;
 			this.CyclesPerFrame = Math.floor(AtmelProcessor.ClockSpeed / this.FrameRate);
@@ -41,11 +43,12 @@ $(function () {
 			this.Canvas.addEventListener("keydown", function (e) { self.ProcessKey(e.keyCode, true) }, true);
 			this.Canvas.addEventListener("keyup", function (e) { self.ProcessKey(e.keyCode, false) }, true);
 
-			// handle file load button event
-			$("#fileInput").change(function (e) { self.OnLoad(e); });
-
-			// handle reset event
-			$("#reset").click(function (e) { self.OnReset(e); });
+			// handle button events
+			$("#hexInput").change(function (e) { self.OnLoadHex(); });
+			$("#imgInput").change(function (e) { self.OnLoadImg(); });
+			$("#reset").click(function () { self.OnReset(); });
+			//$("#bootloader").click(function () { self.OnBootloader(); });
+			$("#loader").click(function () { self.OnLoader(); });
 		},
 
 		CreateUpdateTimer: function ()
@@ -89,9 +92,9 @@ $(function () {
 				Buttons.C().set(value);
 		},
 
-		OnLoad: function (e) {
+		OnLoadHex: function () {
 			var self = this;
-			var file = $("#fileInput")[0].files[0];
+			var file = $("#hexInput")[0].files[0];
 			{
 				var reader = new FileReader();
 				reader.onload = function (e) {
@@ -101,10 +104,13 @@ $(function () {
 
 						// reset the emulator and load the game
 						AtmelContext.Reset();
+						HexDecoder.Decode(Bootloader);
 						self.Loaded = HexDecoder.Decode(self.CurrentFirmware);
 						AtmelProcessor.InitInstrTable();
 						Lcd.Reset();
 						Buttons.Reset();
+
+						$("#canvas").focus();
 					}
 					catch (e)
 					{
@@ -115,17 +121,64 @@ $(function () {
 			}
 		},
 
-		OnReset: function (e) {
+		OnLoadImg: function () {
+			var self = this;
+			var file = $("#imgInput")[0].files[0];
+			{
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					SdDevice.ReadBuffer = new Uint8Array(e.target.result);
+				}
+				reader.readAsArrayBuffer(file);
+			}
+		},
+
+		OnReset: function () {
 			var self = this;
 			if (!self.CurrentFirmware)
 				return;
 			try
 			{
 				AtmelContext.Reset();
+				HexDecoder.Decode(Bootloader);
 				self.Loaded = HexDecoder.Decode(self.CurrentFirmware);
 				AtmelProcessor.InitInstrTable();
 				Lcd.Reset();
 				Buttons.Reset();
+
+				$("#canvas").focus();
+			}
+			catch (e) {
+			}
+		},
+
+		OnBootloader: function () {
+			var self = this;
+			try {
+				AtmelContext.Reset();
+				this.Loaded = HexDecoder.Decode(Bootloader);
+				AtmelProcessor.InitInstrTable();
+				Lcd.Reset();
+				Buttons.Reset();
+				AtmelProcessor.PC = AtmelProcessor.BootloaderAddr;				
+
+				$("#canvas").focus();
+			}
+			catch (e) {
+			}
+		},
+
+		OnLoader: function () {
+			var self = this;
+			try {
+				AtmelContext.Reset();
+				HexDecoder.Decode(Bootloader);
+				self.Loaded = HexDecoder.Decode(Loader);
+				AtmelProcessor.InitInstrTable();
+				Lcd.Reset();
+				Buttons.Reset();
+
+				$("#canvas").focus();
 			}
 			catch (e) {
 			}
