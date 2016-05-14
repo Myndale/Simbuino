@@ -21,7 +21,7 @@
 			this.SPSR = AtmelContext.RAM[AtmelIO.SPSR];
 			this.SPDR = AtmelContext.RAM[AtmelIO.SPDR];
 			this.SPDR.OnRegisterChanged.push(function (oldVal, newVal) { self.SPDR_OnRegisterChanged(oldVal, newVal); });
-			this.SPDR.OnRegisterRead.push(function (oldVal, newVal) { self.SPDR_OnRegisterRead(oldVal, newVal); });
+			this.SPDR.OnRegisterRead.push(function (val) { return self.SPDR_OnRegisterRead(val); });
 		},
 
 		SPDR_OnRegisterRead: function(val)

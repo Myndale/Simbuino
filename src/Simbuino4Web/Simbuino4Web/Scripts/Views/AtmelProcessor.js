@@ -29,8 +29,6 @@
 		FlagsAdd: [],
 		FlagsSub: [],
 
-		Delta: 0,
-
 		/* = 0xc0
 		FlagsMask: ~(
 			(1 << AtmelFlagsRegister.HPOS) |
@@ -188,32 +186,9 @@
 					continue;
 				}
 
-				/*
-				if (AtmelContext.Clock >= 26600)
-					debugger;
-					*/
-
 				// get the current op code and call its handler
 				for (var i=0; i<64; i++)
 				this.InstrTable[AtmelContext.PC]();
-
-				/*
-				AtmelContext.Active = false;
-				if (Deltas[this.Delta++] != -1)
-					debugger;
-				if (Deltas[this.Delta++] != AtmelContext.Clock)
-					debugger;
-				if (Deltas[this.Delta++] != AtmelContext.PC)
-					debugger;
-				while (Deltas[this.Delta] != -1)
-				{
-					var addr = Deltas[this.Delta++];
-					var val = Deltas[this.Delta++];
-					if (AtmelContext.RAM[addr].get() != val)
-						debugger;
-				}
-				AtmelContext.Active = true;
-				*/
 
 			} while (AtmelContext.Clock < lastCycle);
 		},

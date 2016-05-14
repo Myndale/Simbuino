@@ -222,7 +222,6 @@
     <Content Include="Scripts\Views\Bootloader.js" />
     <Content Include="Scripts\Views\Buttons.js" />
     <Content Include="Scripts\Views\class.js" />
-    <Content Include="Scripts\Views\deltas.js" />
     <Content Include="Scripts\Views\EEPROM.js" />
     <Content Include="Scripts\Views\FlagsRegister.js" />
     <Content Include="Scripts\Views\HexDecoder.js" />

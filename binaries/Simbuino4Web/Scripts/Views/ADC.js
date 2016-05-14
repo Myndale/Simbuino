@@ -12,9 +12,9 @@
 			this.ADSCRA.OnRegisterChanged.push(function (oldVal, newVal) { self.ADSCRA_OnRegisterChanged(oldVal, newVal); });
 			this.ADMUX = AtmelContext.RAM[AtmelIO.ADMUX];
 			this.ADCH = AtmelContext.RAM[AtmelIO.ADCH];
-			this.ADCH.OnRegisterRead.push(function (oldVal, newVal) { self.ADCH_OnRegisterRead(oldVal, newVal); });
+			this.ADCH.OnRegisterRead.push(function (val) { return self.ADCH_OnRegisterRead(val); });
 			this.ADCL = AtmelContext.RAM[AtmelIO.ADCL];
-			this.ADCL.OnRegisterRead.push(function (oldVal, newVal) { self.ADCL_OnRegisterRead(oldVal, newVal); });
+			this.ADCL.OnRegisterRead.push(function (val) { return self.ADCL_OnRegisterRead(val); });
 		},
 
 		ADSCRA_OnRegisterChanged: function(oldVal, newVal)
@@ -37,7 +37,7 @@
 
 
 			this.ADCL = AtmelContext.RAM[AtmelIO.ADCL];
-			this.ADCL.OnRegisterRead.push(function (oldVal, newVal) { self.ADCL_OnRegisterRead(oldVal, newVal); });
+			this.ADCL.OnRegisterRead.push(function (val) { return self.ADCL_OnRegisterRead(val); });
 		},
 
 		ADSCRA_OnRegisterChanged: function(oldVal, newVal)

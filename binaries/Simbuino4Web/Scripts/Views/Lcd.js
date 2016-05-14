@@ -28,7 +28,7 @@
 
 			this.Reset();
 			this.RESET_PORT.WriteRegister.get().OnRegisterChanged.push(function (oldVal, newVal) { self.Lcd_OnResetChanged(oldVal, newVal); });
-			SPI.OnReceivedByte.push(function (oldVal, newVal) { self.spi_OnReceivedByte(oldVal, newVal); });
+			SPI.OnReceivedByte.push(function (val) { self.spi_OnReceivedByte(val); });
 
 			this.Reset();
 			this.CreateImage();

@@ -60,6 +60,10 @@
 		UDRIE0: 5,
 		TXC0: 6,
 		TXCIE0: 6,
+
+		// SPM
+		SPMCSR : 0x37,
+		SELFPRGEN: 0
 	}
 
 });

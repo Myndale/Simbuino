@@ -108,7 +108,8 @@
 		{
 			var self = this;
 			this.Flash = range(0, AtmelProcessor.FlashSize);
-			this.EEPROM = range(0, AtmelProcessor.EEPROMSize);
+			for (var i = 0; i < AtmelProcessor.EEPROMSize; i++)
+				this.EEPROM[i] = 255;
 			this.R = range(0, this.NumRegs + this.NumIO + this.RAMSize);
 			var mappedR = [];
 			for (var addr = 0; addr < this.NumRegs; addr++)

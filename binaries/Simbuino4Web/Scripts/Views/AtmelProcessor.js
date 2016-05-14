@@ -13,7 +13,7 @@
 		FlashSize: 32 * 1024 / 2,
 		EEPROMSize: 1024,
 		BootloaderSize: 2 * 1024 / 2,
-		BootloaderAddr: this.FlashSize - this.BootloaderSize,
+		BootloaderAddr: 30 * 1024 / 2,
 
 		// todo: declare the interrupt table somwhere		
 		ClockTable: [1, 2, 4, 8, 16, 32, 64, 128, 256, 1, 1, 1, 1, 1, 1, 1],
@@ -188,7 +188,7 @@
 
 				// get the current op code and call its handler
 				for (var i=0; i<64; i++)
-					this.InstrTable[AtmelContext.PC]();
+				this.InstrTable[AtmelContext.PC]();
 
 			} while (AtmelContext.Clock < lastCycle);
 		},
@@ -1730,7 +1730,11 @@
 					ModifiesPC: false,
 					BitStrings: ["1001 0101 111x 1000"],
 					Handler: function() {
-						// not implemented
+						var addr = AtmelContext.Z.get() / 2;
+						if ((addr >= 0) && (addr < AtmelProcessor.BootloaderAddr)
+							&& (AtmelContext.PC >= AtmelProcessor.BootloaderAddr))
+							AtmelContext.Flash[addr] = AtmelContext.R[1] * 256 + AtmelContext.R[0];
+						AtmelContext.IO[AtmelIO.SPMCSR].set_bit(AtmelIO.SELFPRGEN, 0); // clear SELFPRGEN immediately
 						AtmelContext.Clock++;
 						AtmelContext.PC++;
 					}
