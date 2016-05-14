@@ -195,7 +195,7 @@
 
 				// get the current op code and call its handler
 				for (var i=0; i<64; i++)
-					this.InstrTable[AtmelContext.PC]();
+				this.InstrTable[AtmelContext.PC]();
 
 				/*
 				AtmelContext.Active = false;

@@ -11,9 +11,11 @@
 			this.CS_BIT = 2;
 			this.Index = 0;
 			this.Received = [];
+			for (var i = 0; i < 10; i++)
+				this.Received[i] = 0;
 			this.Status = 0;
 			this.Buffer = [];
-			for (var i = 0; i < 504; i++)
+			for (var i = 0; i < 550; i++)
 				this.Buffer[i] = 0;
 			this.BytesToSend = 0;
 			this.SendIndex = 0;

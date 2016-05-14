@@ -9,7 +9,7 @@
 			this.UCSR0B = AtmelContext.RAM[AtmelIO.UCSR0B];
 			this.UDR0 = AtmelContext.RAM[AtmelIO.UDR0];
 
-			this.UCSR0A.OnRegisterRead.push(function (oldVal, newVal) { self.UCSR0A_OnRegisterRead(oldVal, newVal); });
+			this.UCSR0A.OnRegisterRead.push(function (val) { return self.UCSR0A_OnRegisterRead(val); });
 			this.UCSR0A.OnRegisterChanged.push(function (oldVal, newVal) { self.UCSR0A_OnRegisterChanged(oldVal, newVal); });
 			this.UCSR0B.OnRegisterChanged.push(function (oldVal, newVal) { self.UCSR0B_OnRegisterChanged(oldVal, newVal); });
 			this.UDR0.OnRegisterChanged.push(function (oldVal, newVal) { self.UDR0_OnRegisterChanged(oldVal, newVal); });

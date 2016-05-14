@@ -6,10 +6,10 @@
 		{
 			var self = this;
 			var eecr = AtmelContext.RAM[AtmelIO.EECR];
-			eecr.OnRegisterRead.push(function (oldVal, newVal) { self.EECR_OnRegisterRead(oldVal, newVal); });
+			eecr.OnRegisterRead.push(function (val) { return self.EECR_OnRegisterRead(val); });
 			eecr.OnRegisterChanged.push(function (oldVal, newVal) { self.EECR_OnRegisterChanged(oldVal, newVal); });
 			var eedr = AtmelContext.RAM[AtmelIO.EEDR];
-			eedr.OnRegisterRead.push(function (oldVal, newVal) { self.EEDR_OnRegisterRead(oldVal, newVal); });
+			eedr.OnRegisterRead.push(function (val) { return self.EEDR_OnRegisterRead(val); });
 		},
 
 		EECR_OnRegisterRead: function(val)
