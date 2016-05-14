@@ -28,8 +28,8 @@ PROFILE which currently runs very slow but can be used to measure the execution 
 Simbuino4Web
 ==============
 The Simbuino\src\Simbuino4Web folder contains an experimental HTML5 port of the core Simbuino engine developed for Microsoft Visual Studio Express 2012 for Web. A
-runtime version of this project is currently hosted at http://simbuino4web.ppl-pilot.com. It is recommended that you run this version of Simbuino under Chome; it will
-work with Internet Explorer but runs very slowly and without sound.
+runtime version of this project is currently hosted at http://simbuino4web.ppl-pilot.com. It is recommended that you run this version of Simbuino under either Chome
+or Firefox; it will work with Internet Explorer but runs very slowly and without sound.
 
 3rd-Party Code
 ==============

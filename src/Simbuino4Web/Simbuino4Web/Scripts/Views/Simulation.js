@@ -135,8 +135,12 @@ $(function () {
 
 		OnReset: function () {
 			var self = this;
-			if (!self.CurrentFirmware)
-				return;
+			if (!self.CurrentFirmware) {
+				AtmelContext.Reset();
+				Lcd.Reset();
+				Buttons.Reset();
+				$("#canvas").focus();
+			}
 			try
 			{
 				AtmelContext.Reset();
