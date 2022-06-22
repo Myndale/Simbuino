@@ -47,7 +47,7 @@
 			//TransmitLog += Convert.ToChar(newVal);
 
 			// assume transfer happened immediately and set TXC0
-			UCSR0A.set(UCSR0A.get() | (1 << AtmelIO.TXC0));
+			this.UCSR0A.set(this.UCSR0A.get() | (1 << AtmelIO.TXC0));
 
 			// check if we need to generate another interrupt
 			AtmelContext.UpdateInterruptFlags();
